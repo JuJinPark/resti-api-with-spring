@@ -3,6 +3,7 @@ package me.jujin.demoinflearnrestapi.events;
 import org.modelmapper.ModelMapper;
 
 import org.springframework.hateoas.MediaTypes;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
@@ -11,10 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.validation.Valid;
-import java.net.URI;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 
 @Controller
@@ -46,10 +45,14 @@ public class EventController {
         }
 
         Event event = modelMapper.map(eventDto,Event.class);
+        event.update();
         Event newEvent=this.eventRepository.save(event);
-        URI createUri=linkTo(EventController.class).slash(newEvent.getId()).toUri();
-
-        return ResponseEntity.created(createUri).body(newEvent);
+        WebMvcLinkBuilder selfLinkBuilder=linkTo(EventController.class).slash(newEvent.getId());
+        EventResource eventResource=new EventResource(newEvent);
+        eventResource.add(selfLinkBuilder.withRel("query-events"));
+//        eventResource.add(selfLinkBuilder.withSelfRel());
+        eventResource.add(selfLinkBuilder.withRel("update-event"));
+        return ResponseEntity.created(selfLinkBuilder.toUri()).body(eventResource);
     }
 
 }
