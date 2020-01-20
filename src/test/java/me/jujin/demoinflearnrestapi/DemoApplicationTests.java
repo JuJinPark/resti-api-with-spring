@@ -1,13 +1,14 @@
 package me.jujin.demoinflearnrestapi;
 
-import org.junit.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+import org.junit.Assert;
+import org.junit.Test;
+
 class DemoApplicationTests {
 
     @Test
-    void contextLoads() {
+    public void contextLoads() {
+        Assert.assertEquals("ss","ss");
     }
 
 }
