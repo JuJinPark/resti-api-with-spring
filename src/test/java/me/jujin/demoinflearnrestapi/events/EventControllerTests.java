@@ -4,6 +4,7 @@ import me.jujin.demoinflearnrestapi.accounts.Account;
 import me.jujin.demoinflearnrestapi.accounts.AccountRepository;
 import me.jujin.demoinflearnrestapi.accounts.AccountRole;
 import me.jujin.demoinflearnrestapi.accounts.AccountService;
+import me.jujin.demoinflearnrestapi.common.AppProperties;
 import me.jujin.demoinflearnrestapi.common.BaseControllerTest;
 import me.jujin.demoinflearnrestapi.common.TestDescription;
 import org.junit.Before;
@@ -41,6 +42,9 @@ public class EventControllerTests extends BaseControllerTest {
 
     @Autowired
     AccountRepository accountRepository;
+
+    @Autowired
+    AppProperties appProperties;
 
     @Before
     public void setUp(){
@@ -153,10 +157,8 @@ public class EventControllerTests extends BaseControllerTest {
                 .build();
         accountService.saveAccount(jujin);
 
-        String clientId = "myApp";
-        String clientSecret = "pass";
         ResultActions perform = this.mockMvc.perform(post("/oauth/token")
-                .with(httpBasic(clientId, clientSecret))
+                .with(httpBasic(appProperties.getClientId(), appProperties.getClientSecret()))
                 .param("username", username)
                 .param("password", password)
                 .param("grant_type", "password")

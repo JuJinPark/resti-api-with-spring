@@ -15,7 +15,8 @@ public class Account {
     @Id @GeneratedValue
     private Integer id;
 
-    private String email;
+    @Column(unique = true)
+    String email;
 
     private String password;
 

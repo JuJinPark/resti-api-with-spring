@@ -3,10 +3,12 @@ package me.jujin.demoinflearnrestapi.configs;
 import me.jujin.demoinflearnrestapi.accounts.Account;
 import me.jujin.demoinflearnrestapi.accounts.AccountRole;
 import me.jujin.demoinflearnrestapi.accounts.AccountService;
+import me.jujin.demoinflearnrestapi.common.AppProperties;
 import me.jujin.demoinflearnrestapi.common.BaseControllerTest;
 import me.jujin.demoinflearnrestapi.common.TestDescription;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationRunner;
 
 import java.util.Set;
 
@@ -21,25 +23,18 @@ public class AuthServerConfigTest extends BaseControllerTest {
     @Autowired
     AccountService accountService;
 
+    @Autowired
+    AppProperties appProperties;
+
     @Test
     @TestDescription("인증 토근을 발급 받는 테스트")
     public void getAuthToken() throws Exception{
-        //Given
-        String username = "jujin@email.com";
-        String password = "jujin";
-        Account jujin = Account.builder()
-                .email(username)
-                .password(password)
-                .roles(Set.of(AccountRole.ADMIN, AccountRole.USER))
-                .build();
-        accountService.saveAccount(jujin);
 
-        String clientId = "myApp";
-        String clientSecret = "pass";
+
         this.mockMvc.perform(post("/oauth/token")
-                        .with(httpBasic(clientId,clientSecret))
-                        .param("username",username)
-                        .param("password",password)
+                        .with(httpBasic(appProperties.getClientId(),appProperties.getClientSecret()))
+                        .param("username",appProperties.getUserUsername())
+                        .param("password",appProperties.getUserPassword())
                         .param("grant_type","password")
 
         )
